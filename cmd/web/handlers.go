@@ -16,16 +16,23 @@ func home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// slice containing path to base and home templates
+	files := []string{
+		"./ui/html/base.tmpl.html",
+		"./ui/html/partials/nav.tmpl.html",
+		"./ui/html/pages/home.tmpl.html",
+	}
+
 	// read HTML template
-	ts, err := template.ParseFiles("./ui/html/pages/home.tmpl.html")
+	ts, err := template.ParseFiles(files...) // ...variadic
 	if err != nil {
 		log.Print(err.Error())
 		http.Error(w, "Internal Server Error", 500)
 		return
 	}
 
-	// write HTML template
-	err = ts.Execute(w, nil)
+	// write content of base HTML template
+	err = ts.ExecuteTemplate(w, "base", nil)
 	if err != nil {
 		log.Print(err.Error())
 		http.Error(w, "Internal Server Error", 500)
