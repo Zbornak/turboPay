@@ -14,6 +14,14 @@ import (
 func main() {
 	// router
 	mux := http.NewServeMux()
+
+	// create fileserver for static directory
+	fileServer := http.FileServer(http.Dir("./ui/static/"))
+
+	// register fileserver for all /static/ paths
+	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+
+	// register all other paths
 	mux.HandleFunc("/", home)
 	mux.HandleFunc("/stockItem/view", itemView)
 	mux.HandleFunc("/stockItem/create", itemCreate)
