@@ -38,11 +38,18 @@ func main() {
 	mux.HandleFunc("/stockItem/view", itemView)
 	mux.HandleFunc("/stockItem/create", itemCreate)
 
+	// new server to log errors with errorlog instead of default logger
+	srv := &http.Server{
+		Addr:     *addr,
+		ErrorLog: errorLog,
+		Handler:  mux,
+	}
+
 	// infoLog handles info message
 	infoLog.Printf("Starting server on port %s...", *addr)
 
 	// start new web server on port 4000
-	err := http.ListenAndServe(*addr, mux)
+	err := srv.ListenAndServe()
 
 	//errorLog handles error message (if any)
 	errorLog.Fatal(err)
