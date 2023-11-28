@@ -11,7 +11,7 @@ import (
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	// 404 if URL path doesn't match "/"
 	if r.URL.Path != "/" {
-		http.NotFound(w, r)
+		app.notFound(w) // helper
 		return
 	}
 
@@ -25,16 +25,14 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	// read HTML template
 	ts, err := template.ParseFiles(files...) // ...variadic
 	if err != nil {
-		app.errorLog.Print(err.Error())
-		http.Error(w, "Internal Server Error", 500)
+		app.serverError(w, err) // helper
 		return
 	}
 
 	// write content of base HTML template
 	err = ts.ExecuteTemplate(w, "base", nil)
 	if err != nil {
-		app.errorLog.Print(err.Error())
-		http.Error(w, "Internal Server Error", 500)
+		app.serverError(w, err) // helper
 	}
 }
 
@@ -43,7 +41,7 @@ func (app *application) itemView(w http.ResponseWriter, r *http.Request) {
 	// allow for user id item query, checking to make sure user enters a valid uint
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 1 {
-		http.NotFound(w, r)
+		app.notFound(w) // helper
 		return
 	}
 
@@ -55,9 +53,9 @@ func (app *application) itemCreate(w http.ResponseWriter, r *http.Request) {
 	// method not allowed (405) if request method isn't POST
 	if r.Method != http.MethodPost {
 		// add 'Allow:POST' to response header map to let user know what request is allowed
-		w.Header().Set("Allow", "POST")
+		w.Header().Set("Allow", http.MethodPost)
 
-		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		app.clientError(w, http.StatusMethodNotAllowed) // helper
 		return
 	}
 
