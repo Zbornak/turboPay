@@ -7,11 +7,16 @@ Date: 27/11/2023
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 )
 
 func main() {
+	// flag allowing user to decide port (:4000 default)
+	addr := flag.String("addr", ":4000", "HTTP network address")
+	flag.Parse()
+
 	// router
 	mux := http.NewServeMux()
 
@@ -26,9 +31,9 @@ func main() {
 	mux.HandleFunc("/stockItem/view", itemView)
 	mux.HandleFunc("/stockItem/create", itemCreate)
 
-	log.Print("Starting server on :4000...")
+	log.Printf("Starting server on port %s...", *addr)
 
 	// start new web server on port 4000
-	err := http.ListenAndServe(":4000", mux)
+	err := http.ListenAndServe(*addr, mux)
 	log.Fatal(err)
 }
