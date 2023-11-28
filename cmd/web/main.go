@@ -13,6 +13,12 @@ import (
 	"os"
 )
 
+// struct to hold app-wide dependencies
+type application struct {
+	errorLog *log.Logger
+	infoLog  *log.Logger
+}
+
 func main() {
 	// flag allowing user to decide port (:4000 default)
 	addr := flag.String("addr", ":4000", "HTTP network address")
@@ -24,6 +30,12 @@ func main() {
 	// logger for error messages
 	errorLog := log.New(os.Stderr, "ERROR:\t", log.Ldate|log.Ltime|log.Lshortfile)
 
+	// initialise new instance of application struct
+	app := &application{
+		errorLog: errorLog,
+		infoLog:  infoLog,
+	}
+
 	// router
 	mux := http.NewServeMux()
 
@@ -34,9 +46,9 @@ func main() {
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	// register all other paths
-	mux.HandleFunc("/", home)
-	mux.HandleFunc("/stockItem/view", itemView)
-	mux.HandleFunc("/stockItem/create", itemCreate)
+	mux.HandleFunc("/", app.home)
+	mux.HandleFunc("/stockItem/view", app.itemView)
+	mux.HandleFunc("/stockItem/create", app.itemCreate)
 
 	// new server to log errors with errorlog instead of default logger
 	srv := &http.Server{
