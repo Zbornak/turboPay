@@ -25,8 +25,8 @@ type StockItemModel struct {
 
 // insert new stock item
 func (m *StockItemModel) Insert(title string, artist string, trackListing string, expires int, format string, price int, releaseDate string) (int, error) {
-	stmt := `INSERT INTO stockItems (title, artist, trackListing, expires, format, price, releaseDate)
-    VALUES(?, ?, UTC_TIMESTAMP(), DATE_ADD(UTC_TIMESTAMP(), INTERVAL ? DAY))`
+	stmt := `INSERT INTO stockItems (title, artist, trackListing, created, expires, format, price, releaseDate)
+    VALUES(?, ?, ?, UTC_TIMESTAMP(), DATE_ADD(UTC_TIMESTAMP(), INTERVAL ? DAY), ?, ?, ?)`
 
 	result, err := m.DB.Exec(stmt, title, artist, trackListing, expires, format, price, releaseDate)
 	if err != nil {
