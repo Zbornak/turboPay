@@ -3,12 +3,11 @@
 {{define "main"}}
     <div class="stockItem">
         <div class="metadata">
-            <span>Stock Number: {{.ID}}</span>
-        </div>
-        <div class="metadata">
             <strong>{{.Title}}</strong>
+            <span>SN: {{.ID}}</span>
         </div>
         <div class="metadata">
+            <span>by </span>
             <strong>{{.Artist}}</strong>
         </div>
         <pre><code>{{.TrackListing}}</code></pre>
