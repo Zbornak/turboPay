@@ -12,14 +12,16 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"turboPay/internal/models"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 // struct to hold app-wide dependencies
 type application struct {
-	errorLog *log.Logger
-	infoLog  *log.Logger
+	errorLog   *log.Logger
+	infoLog    *log.Logger
+	stockItems *models.StockItemModel
 }
 
 func main() {
@@ -45,8 +47,9 @@ func main() {
 
 	// initialise new instance of application struct
 	app := &application{
-		errorLog: errorLog,
-		infoLog:  infoLog,
+		errorLog:   errorLog,
+		infoLog:    infoLog,
+		stockItems: &models.StockItemModel{DB: db},
 	}
 
 	// router
