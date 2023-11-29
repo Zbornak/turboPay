@@ -68,5 +68,37 @@ func (m *StockItemModel) Get(id int) (*StockItem, error) {
 
 // return the 10 most recent stock items
 func (m *StockItemModel) Latest() ([]*StockItem, error) {
-	return nil, nil
+	stmt := `SELECT id, title, artist, trackListing, created, expires, format, price, releaseDate FROM stockItems
+    WHERE expires > UTC_TIMESTAMP() ORDER BY id DESC LIMIT 10`
+
+	// return sql.Rows resultset from query
+	rows, err := m.DB.Query(stmt)
+	if err != nil {
+		return nil, err
+	}
+
+	// close resultset before Latest() returns
+	// if not closed the underlying db connection will stay open
+	defer rows.Close()
+
+	//empty slice to contain stockItem structs
+	stockItems := []*StockItem{}
+
+	// iterate over resultset
+	for rows.Next() {
+		s := &StockItem{}
+		err = rows.Scan(&s.ID, &s.Title, &s.Artist, &s.TrackListing, &s.Created, &s.Expires, &s.Format, &s.Price, &s.ReleaseDate)
+		if err != nil {
+			return nil, err
+		}
+
+		// append to slice
+		stockItems = append(stockItems, s)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return stockItems, nil
 }
