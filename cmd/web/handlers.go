@@ -59,5 +59,22 @@ func (app *application) itemCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte("Create a new stock item..."))
+	// dummy data
+	title := "Ten New Songs"
+	artist := "Leonard Cohen"
+	trackListing := "In My Secret Life\nA Thousand Kisses Deep\nThat Dont Make It Junk\nHere It Is\nLove Itself\nBy The Rivers Dark\nAlexandra Leaving\nYou Have Loved Enough\nBoogie Street\nThe Land Of Plenty"
+	expires := 7
+	format := "VINYL"
+	price := 24
+	releaseDate := "09/10/2011"
+
+	// pass data to model
+	id, err := app.stockItems.Insert(title, artist, trackListing, expires, format, price, releaseDate)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	// redirect user to relevant stock item
+	http.Redirect(w, r, fmt.Sprintf("/stockItem/view?id=%d", id), http.StatusSeeOther)
 }
