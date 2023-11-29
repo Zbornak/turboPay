@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	// "html/template"
+	"html/template"
 	"net/http"
 	"strconv"
 	"turboPay/internal/models"
@@ -69,7 +69,25 @@ func (app *application) itemView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "%+v", stockItem)
+	// paths
+	files := []string{
+		"./ui/html/base.tmpl.html",
+		"./ui/html/partials/nav.tmpl.html",
+		"./ui/html/pages/view.tmpl.html",
+	}
+
+	// parse template files
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	// execute template files
+	err = ts.ExecuteTemplate(w, "base", stockItem)
+	if err != nil {
+		app.serverError(w, err)
+	}
 }
 
 // create new stock item

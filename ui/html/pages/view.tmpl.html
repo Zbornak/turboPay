@@ -1,0 +1,20 @@
+{{define "title"}}StockItem #{{.ID}}{{end}}
+
+{{define "main"}}
+    <div class="stockItem">
+        <div class="metadata">
+            <span>Stock Number: {{.ID}}</span>
+        </div>
+        <div class="metadata">
+            <strong>{{.Title}}</strong>
+        </div>
+        <div class="metadata">
+            <strong>{{.Artist}}</strong>
+        </div>
+        <pre><code>{{.TrackListing}}</code></pre>
+        <div class="metadata">
+            <time>Added: {{.Created}}</time>
+            <time>Expires: {{.Expires}}</time>
+        </div>
+    </div>
+{{end}}
