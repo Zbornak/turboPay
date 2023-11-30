@@ -101,3 +101,7 @@ tr {
 tr:nth-child(2n) {
     background-color: #F7F9FA;
 }
+
+.nav {
+    display: inline-block;
+}
