@@ -83,8 +83,13 @@ func (app *application) itemView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// instance of templateData struct
+	data := &templateData{
+		StockItem: stockItem,
+	}
+
 	// execute template files
-	err = ts.ExecuteTemplate(w, "base", stockItem)
+	err = ts.ExecuteTemplate(w, "base", data)
 	if err != nil {
 		app.serverError(w, err)
 	}
