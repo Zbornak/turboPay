@@ -1,6 +1,25 @@
 {{define "title"}}Home{{end}}
 
 {{define "main"}}
-    <h2>Item Details</h2>
-    <p>Nothing to see here yet!</p>
+    <h2>Latest Stock Items</h2>
+    {{if .StockItems}}
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Created</th>
+            <th>ID</th>
+        </tr>
+        {{range .StockItems}}
+        <tr>
+            <td><a href="/stockItem/view?id={{.ID}}">{{.Title}}</a></td>
+            <td>{{.Artist}}</td>
+            <td>{{.Created}}</td>
+            <td>{{.ID}}</td>
+        </tr>
+        {{end}}
+    </table>
+    {{else}}
+        <p>No entries found.</p>
+    {{end}}
 {{end}}
