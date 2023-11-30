@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	"html/template"
 	"net/http"
 	"strconv"
 	"turboPay/internal/models"
@@ -24,30 +23,10 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// slice containing path to base and home templates
-	files := []string{
-		"./ui/html/base.tmpl.html",
-		"./ui/html/partials/nav.tmpl.html",
-		"./ui/html/pages/home.tmpl.html",
-	}
-
-	// read HTML template
-	ts, err := template.ParseFiles(files...) // ...variadic
-	if err != nil {
-		app.serverError(w, err) // helper
-		return
-	}
-
-	// instance of templateData struct
-	data := &templateData{
+	// render helper
+	app.render(w, http.StatusOK, "home.tmpl.html", &templateData{
 		StockItems: stockItems,
-	}
-
-	// write content of base HTML template
-	err = ts.ExecuteTemplate(w, "base", data)
-	if err != nil {
-		app.serverError(w, err) // helper
-	}
+	})
 }
 
 // view stock item
@@ -70,30 +49,10 @@ func (app *application) itemView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// paths
-	files := []string{
-		"./ui/html/base.tmpl.html",
-		"./ui/html/partials/nav.tmpl.html",
-		"./ui/html/pages/view.tmpl.html",
-	}
-
-	// parse template files
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-
-	// instance of templateData struct
-	data := &templateData{
+	// render helper
+	app.render(w, http.StatusOK, "view.tmpl.html", &templateData{
 		StockItem: stockItem,
-	}
-
-	// execute template files
-	err = ts.ExecuteTemplate(w, "base", data)
-	if err != nil {
-		app.serverError(w, err)
-	}
+	})
 }
 
 // create new stock item
