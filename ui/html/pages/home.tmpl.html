@@ -2,14 +2,14 @@
 
 {{define "main"}}
     <h2 style="display: inline-block;">Latest Stock Items</h2>
-    <h2 style="display: inline-block;"><a href="/">+</a></h2>
+    <h1 style="display: inline-block;"><a href="/">+</a></h1>
     {{if .StockItems}}
     <table>
         <tr>
             <th>Title</th>
             <th>Artist</th>
             <th>Added</th>
-            <th>ID</th>
+            <th>SN</th>
         </tr>
         {{range .StockItems}}
         <tr>
