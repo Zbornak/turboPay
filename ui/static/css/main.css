@@ -76,3 +76,28 @@ h2 {
 .stockItem .metadata time:last-child {
     float: right;
 }
+
+table {
+    background: white;
+    border: 1px solid #E4E5E7;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    text-align: left;
+    padding: 9px 18px;
+}
+
+th:last-child, td:last-child {
+    text-align: right;
+    color: #6A6C6F;
+}
+
+tr {
+    border-bottom: 1px solid #E4E5E7;
+}
+
+tr:nth-child(2n) {
+    background-color: #F7F9FA;
+}
