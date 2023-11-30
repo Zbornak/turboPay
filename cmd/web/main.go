@@ -9,6 +9,7 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -19,9 +20,10 @@ import (
 
 // struct to hold app-wide dependencies
 type application struct {
-	errorLog   *log.Logger
-	infoLog    *log.Logger
-	stockItems *models.StockItemModel
+	errorLog      *log.Logger
+	infoLog       *log.Logger
+	stockItems    *models.StockItemModel
+	templateCache map[string]*template.Template
 }
 
 func main() {
@@ -45,26 +47,19 @@ func main() {
 	// close connection pool before exiting main function
 	defer db.Close()
 
-	// initialise new instance of application struct
-	app := &application{
-		errorLog:   errorLog,
-		infoLog:    infoLog,
-		stockItems: &models.StockItemModel{DB: db},
+	// initialise new template cache
+	templateCache, err := newTemplateCache()
+	if err != nil {
+		errorLog.Fatal(err)
 	}
 
-	// router
-	mux := http.NewServeMux()
-
-	// create fileserver for static directory
-	fileServer := http.FileServer(http.Dir("./ui/static/"))
-
-	// register fileserver for all /static/ paths
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
-
-	// register all other paths
-	mux.HandleFunc("/", app.home)
-	mux.HandleFunc("/stockItem/view", app.itemView)
-	mux.HandleFunc("/stockItem/create", app.itemCreate)
+	// initialise new instance of application struct
+	app := &application{
+		errorLog:      errorLog,
+		infoLog:       infoLog,
+		stockItems:    &models.StockItemModel{DB: db},
+		templateCache: templateCache,
+	}
 
 	// new server to log errors with errorlog instead of default logger
 	srv := &http.Server{
